@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import { createRustDocsServer } from "./server.js"
 import type { ServerConfig } from "./types.js"
@@ -64,7 +64,12 @@ MCP Integration:
 
 // Show version if requested
 if (args.includes("--version") || args.includes("-v")) {
-	const packageJson = require("../package.json")
+	const { readFileSync } = await import("node:fs")
+	const { fileURLToPath } = await import("node:url")
+	const { dirname, join } = await import("node:path")
+	const __filename = fileURLToPath(import.meta.url)
+	const __dirname = dirname(__filename)
+	const packageJson = JSON.parse(readFileSync(join(__dirname, "../package.json"), "utf-8"))
 	console.log(`mcp-docsrs v${packageJson.version}`)
 	process.exit(0)
 }
